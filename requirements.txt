@@ -1,0 +1,9 @@
+numpy
+nltk
+tensorflow
+wikipedia
+speechRecognition
+ttsmms
+pygame
+pyttsx3
+pyaudio
