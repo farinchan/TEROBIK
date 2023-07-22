@@ -1,17 +1,16 @@
+import streamlit as st
 import random
 import json 
 import pickle 
 import numpy as np 
-import pyttsx3
-import speech_recognition as sr
-import pyaudio
+from PIL import Image
+
 
 import nltk 
 from nltk.stem import WordNetLemmatizer
 
-from tensorflow.keras.models import load_model
 
-engine = pyttsx3.init()
+from tensorflow.keras.models import load_model
 
 lemmatizer = WordNetLemmatizer()
 intents = json.loads(open("intents.json").read())
@@ -53,7 +52,6 @@ def get_response(intents_list, intents_json):
         for i in list_of_intents:
             if i["tag"] == tag:
                 result = random.choice(i["responses"])
-                
                 break 
         return result 
     except :
@@ -61,33 +59,56 @@ def get_response(intents_list, intents_json):
 
 print("GO! Bot is running!")
 
-voices = engine.getProperty('voices')
-engine.setProperty('voice', voices[1].id)
-engine.say("Halo perkenalkan nama ku adalah terobik!")
-engine.runAndWait()
+# while True:
+#     message = input("")
+#     ints = predict_class(message)
+#     res = get_response(ints, intents)
+#     print(res)
 
-def SpeechRec():
-    mendengar = sr.Recognizer()
-    with sr.Microphone() as source:
-        print("Mendengar....")
-        try:
-            speech = mendengar.listen(source)
-            print("Speech Diterima")
-            speechText = mendengar.recognize_google(speech, language='id-ID')
-            print("HUMAN : \t", speechText)
-            return speechText
-        except:
-            print("Terjadi Kesalahan")
-            return "Terjadi kesalahan"
 
-while True:
-    message = SpeechRec()
-    ints = predict_class(message)
+with st.sidebar:
+    st.markdown('<i class="far fa-smile"></i> Tombol dengan Ikon Font Awesome', unsafe_allow_html=True)
+
+    st.write("""
+        # TEROBIK
+        UKM ORBIT - UIN Sjech M.Djamil Djambek Bukittinggi
+    """)
+    with st.expander("Tentang Kami"):
+        st.write("""
+            The chart above shows some numbers I picked for you.
+            I rolled actual dice for these, so they're *guaranteed* to
+            be random.
+        """)
+        st.image("https://static.streamlit.io/examples/dice.jpg")
+
+    with st.echo():
+        st.write("This code will be printed to the sidebar.")
+
+with st.chat_message("assistant"):
+        st.write("Halo Terobik disini!, saya adalah Kecerdasan Buatan yang dibuat & diprogram oleh UKM ORBIT")
+
+if 'chat' not in st.session_state:
+    st.session_state['chat'] = []
+
+
+prompt = st.chat_input("Say something")
+
+if prompt: 
+    print("Pertanyaan : ", prompt)
+    ints = predict_class(prompt)
     res = get_response(ints, intents)
-    print("TEROBIK : \t", res)
-    if res[0:22] == "Terobik Akan dimatikan":
-        engine.say(res)
-        engine.runAndWait()
-        break 
-    engine.say(res)
-    engine.runAndWait()
+    print("Jawaban : ", res)
+    st.session_state['chat'].append({
+        "pertanyaan" : prompt,
+        "jawaban" : res
+    })
+
+    
+
+for item in st.session_state['chat'] :
+    with st.chat_message("user"):
+        st.write(item["pertanyaan"])
+    with st.chat_message("assistant"):
+        st.write(item["jawaban"])
+
+

@@ -7,3 +7,4 @@ ttsmms
 pygame
 pyttsx3
 pyaudio
+streamlit

@@ -8,8 +8,8 @@ import tensorflow as tf
 import nltk
 from nltk.stem import WordNetLemmatizer
 
-# nltk.download('punkt')
-# nltk.download('wordnet')
+nltk.download('punkt')
+nltk.download('wordnet')
 
 lemmatizer = WordNetLemmatizer()
 
@@ -33,8 +33,8 @@ words = sorted(set(words))
 
 classes = sorted(set(classes))
 
-pickle.dump(words, open('model/words.pkl', 'wb'))
-pickle.dump(classes, open('model/classes.pkl', 'wb'))
+pickle.dump(words, open('models/words.pkl', 'wb'))
+pickle.dump(classes, open('models/classes.pkl', 'wb'))
 
 training = []
 outputEmpty = [0] * len(classes)
@@ -67,5 +67,5 @@ model.compile(loss='categorical_crossentropy', optimizer=sgd, metrics=['accuracy
 
 
 model.fit(trainX, trainY, epochs=200, batch_size=5, verbose=1)
-model.save('model/terobik_model.h5')
+model.save('models/terobik_model.h5')
 print('Done')
